@@ -8,7 +8,6 @@ use App\Http\Requests\MedicineRequest;
 
 class MedicineController extends Controller
 {
-
     /**
      * Store a newly created resource in storage.
      */

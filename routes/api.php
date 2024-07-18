@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MedicineController;
+use App\Http\Controllers\EquipmentController;
 use App\Http\Controllers\DiagnosticController;
 use App\Http\Controllers\CitizenDetailsController;
 use App\Http\Controllers\CitizenHistoryController;
@@ -41,6 +42,11 @@ Route::controller(UserController::class)->group(function () {
 Route::controller(MedicineController::class)->group(function () {
     Route::post('/medicine',                 'store');
     Route::delete('/medicine/{id}',          'destroy');
+});
+
+Route::controller(EquipmentController::class)->group(function () {
+    Route::post('/equipment',                 'store');
+    Route::delete('/equipment/{id}',          'destroy');
 });
 
 
