@@ -50,12 +50,11 @@ Route::controller(EquipmentController::class)->group(function () {
 });
 
 
-// Route::controller(CitizenDetailsController::class)->group(function () {
-//     Route::get('/citizen',                     'index');
-//     Route::get('/citizen/{id}',                'show');
-//     Route::post('/citizen',                    'store');
-//     Route::delete('/citizen/{id}',             'destroy');
-// });
+Route::controller(CitizenDetailsController::class)->group(function () {
+    Route::post('/citizen',                    'store');
+    Route::delete('/citizen/{id}',             'destroy');
+    Route::put('/citizen/{id}',                   'update')->name('user.update');
+});
 
 // Route::controller(CitizenHistoryController::class)->group(function () {
 //     Route::get('/citizen-history', 'index');
