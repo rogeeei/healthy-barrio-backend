@@ -61,7 +61,7 @@ Route::controller(CitizenDetailsController::class)->group(function () {
 //     Route::get('/citizen-history/{id}', 'show');
 // });
 
-// Route::controller(DiagnosticController::class)->group(function () {
-//     Route::post('/diagnostics', 'store');
-//     Route::put('/diagnostics/{id}', 'update');
-// });
+Route::controller(DiagnosticController::class)->group(function () {
+    Route::post('/diagnostics',               'store');
+    Route::delete('/diagnostics/{id}',          'destroy');
+});
