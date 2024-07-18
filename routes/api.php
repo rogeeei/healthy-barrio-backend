@@ -5,6 +5,7 @@ API
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MedicineController;
 use App\Http\Controllers\DiagnosticController;
 use App\Http\Controllers\CitizenDetailsController;
 use App\Http\Controllers\CitizenHistoryController;
@@ -36,6 +37,12 @@ Route::controller(UserController::class)->group(function () {
     Route::put('/user/email/{id}',          'email')->name('user.email');
     Route::delete('/user/{id}',             'destroy');
 });
+
+Route::controller(MedicineController::class)->group(function () {
+    Route::post('/medicine',                 'store');
+    Route::delete('/medicine/{id}',          'destroy');
+});
+
 
 // Route::controller(CitizenDetailsController::class)->group(function () {
 //     Route::get('/citizen',                     'index');
