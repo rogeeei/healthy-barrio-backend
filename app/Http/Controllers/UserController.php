@@ -24,6 +24,15 @@ class UserController extends Controller
         return $user;
     }
 
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        return User::findOrFail($id);
+    }
+
+
 
     /**
      * Update the specified resource in storage.

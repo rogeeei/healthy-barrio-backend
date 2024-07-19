@@ -24,8 +24,10 @@ class UserRequest extends FormRequest
     {
         if (request()->routeIs('user.login')) {
             return [
-                'id'          => 'required|string|max:255',
-                'password'    => 'required|min:8',
+                'user_id'            => 'required|integer|max:255',
+                'password'         => 'required|min:8',
+                'brgy'               => 'required|string|max:255',
+                'role'               => 'required|string|max:255',
             ];
         } else if (request()->routeIs('user.store')) {
             return [
