@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use App\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -15,35 +16,47 @@ class AuthController extends Controller
      */
     public function login(UserRequest $request)
     {
-        $user = User::where('user_id', $request->user_id)
-            ->where('role', $request->role)
-            ->where('brgy', $request->brgy)
+        // Retrieve the request data
+        $data = $request->only('user_id', 'brgy', 'role', 'password');
+
+        // Attempt to find the user based on user_id, brgy, role, and password
+        $user = User::where('user_id', $data['user_id'])
+            ->where('brgy', $data['brgy'])
+            ->where('role', $data['role'])
             ->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'user_id' => ['The provided credentials are incorrect.'],
-            ]);
+        if (!$user || !Hash::check($data['password'], $user->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
+        // Check if the user is approved unless they are an admin
+        if ($user->role !== 'admin' && !$user->approved) {
+            return response()->json(['message' => 'Your account is pending approval by an admin.'], 403);
+        }
+
+        // Generate the token for the authenticated user
+        $token = $user->createToken($data['user_id'])->plainTextToken;
+
+        // Prepare the response
         $response = [
             'user'  => $user,
-            'token' => $user->createToken($request->user_id)->plainTextToken
+            'token' => $token,
         ];
 
-        return $response;
+        // Return the successful login response
+        return response()->json(['message' => 'Login successful', 'data' => $response], 200);
     }
 
     /**
-     * Log out to the specified resource.
+     * Log out of the specified resource.
      */
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
 
         $response = [
-            'message' => 'Logout'
+            'message' => 'Logout successful',
         ];
-        return $response;
+        return response()->json($response, 200);
     }
 }

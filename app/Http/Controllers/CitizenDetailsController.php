@@ -15,9 +15,9 @@ class CitizenDetailsController extends Controller
         // Retrieve the validated input data...
         $validated = $request->validated();
 
-        $citizendetails = CitizenDetails::create($validated);
+        $citizenDetails = CitizenDetails::create($validated);
 
-        return $citizendetails;
+        return response()->json($citizenDetails, 201);
     }
 
     /**
@@ -25,15 +25,13 @@ class CitizenDetailsController extends Controller
      */
     public function update(CitizenDetailsRequest $request, string $id)
     {
-        $citizendetails = CitizenDetails::findOrFail($id);
+        $citizenDetails = CitizenDetails::findOrFail($id);
 
         $validated = $request->validated();
 
-        $citizendetails->name = $validated['firstname'];
+        $citizenDetails->update($validated);
 
-        $citizendetails->save();
-
-        return $citizendetails;
+        return response()->json($citizenDetails);
     }
 
     /**
@@ -41,10 +39,10 @@ class CitizenDetailsController extends Controller
      */
     public function destroy(string $id)
     {
-        $citizendetails = CitizenDetails::findOrFail($id);
+        $citizenDetails = CitizenDetails::findOrFail($id);
 
-        $citizendetails->delete();
+        $citizenDetails->delete();
 
-        return $citizendetails;
+        return response()->json(null, 204);
     }
 }

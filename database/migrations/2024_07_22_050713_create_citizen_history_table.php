@@ -17,16 +17,9 @@ return new class extends Migration
             $table->unsignedBigInteger('diagnostic_id');
             $table->date('date');
             $table->timestamps();
-        });
-        Schema::table('citizen_history', function (Blueprint $table) {
-            $table->unsignedBigInteger('diagnostic_id');
 
-            $table->foreign('diagnostic_id')->references('id')->on('diagnostic');
-        });
-        Schema::table('citizen_history', function (Blueprint $table) {
-            $table->unsignedBigInteger('citizen_id');
-
-            $table->foreign('citizen_id')->references('id')->on('citizen_details');
+            $table->foreign('diagnostic_id')->references('diagnostic_id')->on('diagnostic');
+            $table->foreign('citizen_id')->references('citizen_id')->on('citizen_details');
         });
     }
 
