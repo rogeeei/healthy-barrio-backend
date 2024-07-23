@@ -47,6 +47,6 @@ class CitizenHistory extends Model
      */
     public function diagnostic()
     {
-        return $this->belongsTo(Diagnostic::class, 'diagnostic_id', 'id');
+        return $this->belongsTo(Diagnostic::class, 'diagnostic_id', 'diagnostic_id');
     }
 }

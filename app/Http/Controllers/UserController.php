@@ -51,6 +51,7 @@ class UserController extends Controller
         return User::findOrFail($id);
     }
 
+
     /**
      * Update the password of the specified resource in storage.
      */

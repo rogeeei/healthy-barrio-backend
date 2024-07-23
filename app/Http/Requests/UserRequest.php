@@ -27,7 +27,7 @@ class UserRequest extends FormRequest
                 'user_id'            => 'required|integer|max:255',
                 'password'           => 'required|min:8',
                 'brgy'               => 'required|string|max:255',
-                'role'               => 'required|string|max:255',
+                'role'               => 'required|in:admin,user',
             ];
         } else if (request()->routeIs('user.store')) {
             return [
@@ -40,7 +40,7 @@ class UserRequest extends FormRequest
                 'phone_number'       => 'required|string',
                 'brgy'               => 'required|string|max:255',
                 'birthdate'          => 'nullable|date|date_format:Y-m-d',
-                'role'               => 'required|string|max:255',
+                'role'               => 'required|in:admin,user',
                 'image_path'         => 'nullable|max:255',
 
 

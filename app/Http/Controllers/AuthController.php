@@ -37,11 +37,16 @@ class AuthController extends Controller
         // Generate the token for the authenticated user
         $token = $user->createToken($data['user_id'])->plainTextToken;
 
-        // Prepare the response
+        // Ensure token and role are included in the response
         $response = [
-            'user'  => $user,
             'token' => $token,
+            'data' => [
+                'role' => $user->role,
+                'user_id' => $user->user_id,
+            ],
         ];
+
+        return response()->json(['message' => 'Login successful', 'data' => $response], 200);
 
         // Return the successful login response
         return response()->json(['message' => 'Login successful', 'data' => $response], 200);

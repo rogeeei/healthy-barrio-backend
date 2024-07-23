@@ -48,9 +48,8 @@ class CitizenDetails extends Model
         'services_availed',
     ];
 
-    // public function histories()
-    // {
-    //     return $this->hasMany(CitizenHistory::class, 'citizen_id', 'citizen_id');
-    // }
-
+    public function histories()
+    {
+        return $this->hasMany(CitizenHistory::class, 'citizen_id', 'citizen_id');
+    }
 }

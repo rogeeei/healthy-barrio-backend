@@ -37,8 +37,8 @@ class Diagnostic extends Model
     /**
      * Get the histories for the diagnostic.
      */
-    // public function histories()
-    // {
-    //     return $this->hasMany(CitizenHistory::class, 'diagnostic_id', 'id');
-    // }
+    public function histories()
+    {
+        return $this->hasMany(CitizenHistory::class, 'diagnostic_id', 'diagnostic_id');
+    }
 }

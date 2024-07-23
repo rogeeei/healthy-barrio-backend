@@ -36,14 +36,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::patch('/user/{user}/approve', [UserController::class, 'approve'])->name('user.approve');
 
     Route::controller(CitizenDetailsController::class)->group(function () {
+        Route::get('/citizen', 'index');
         Route::post('/citizen', 'store');
         Route::delete('/citizen/{id}', 'destroy');
         Route::put('/citizen/{id}', 'update')->name('citizen.update');
     });
 
     Route::controller(CitizenHistoryController::class)->group(function () {
-        Route::get('/citizen-history', 'index');
-        Route::get('/citizen-history/{id}', 'show');
+        Route::get('/citizen-history',           'index');
+        Route::get('/citizen-history/{id}',      'show');
+        Route::post('/citizen-history',          'store');
     });
 
     Route::controller(DiagnosticController::class)->group(function () {
@@ -54,9 +56,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::controller(MedicineController::class)->group(function () {
         Route::post('/medicine',                 'store');
         Route::delete('/medicine/{id}',          'destroy');
+        Route::get('/medicine',                  'index');
     });
 
     Route::controller(EquipmentController::class)->group(function () {
+        Route::get('/equipment',                   'index');
         Route::post('/equipment',                 'store');
         Route::delete('/equipment/{id}',          'destroy');
     });

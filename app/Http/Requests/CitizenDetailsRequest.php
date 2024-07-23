@@ -27,7 +27,7 @@ class CitizenDetailsRequest extends FormRequest
             'lastname'                  => 'required|string|max:255',
             'suffix'                    => 'nullable|string|max:255',
             'address'                   => 'required|string|max:255',
-            'date_of_birth'             => 'nullable|date|date_format:Y-m-d',
+            'date_of_birth'             => 'required|date|date_format:Y-m-d',
             'gender'                    => 'required|string|max:255',
             'citizen_status'            => 'required|string|max:255',
             'blood_type'                => 'nullable|string|max:255',

@@ -23,7 +23,7 @@ class EquipmentRequest extends FormRequest
     {
         return [
             'description'                => 'required|string|max:255',
-            'quantity'                   => 'required|integer|max:255',
+            'quantity'                   => 'required|integer',
             'location'                   => 'required|string|max:255',
             'condition'                  => 'required|string|max:255',
             'equipment_status'           => 'required|string|max:255',

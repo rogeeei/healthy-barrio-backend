@@ -8,6 +8,11 @@ use App\Http\Requests\MedicineRequest;
 
 class MedicineController extends Controller
 {
+    public function index()
+    {
+        $medicine = Medicine::all();
+        return response()->json($medicine);
+    }
     /**
      * Store a newly created resource in storage.
      */

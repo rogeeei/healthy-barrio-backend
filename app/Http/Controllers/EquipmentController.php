@@ -7,6 +7,12 @@ use App\Models\Equipment;
 
 class EquipmentController extends Controller
 {
+
+    public function index()
+    {
+        $equipment = Equipment::all();
+        return response()->json($equipment);
+    }
     /**
      * Store a newly created resource in storage.
      */
