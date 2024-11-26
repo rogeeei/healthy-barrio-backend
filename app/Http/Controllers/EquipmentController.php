@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\EquipmentRequest;
 use App\Models\Equipment;
+use Illuminate\Http\Request;
 
 class EquipmentController extends Controller
 {
@@ -26,21 +27,41 @@ class EquipmentController extends Controller
         return $equipment;
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(EquipmentRequest $request, string $id)
+    public function show(string $id)
     {
         $equipment = Equipment::findOrFail($id);
 
-        $validated = $request->validated();
-
-        $equipment->name = $validated['name'];
-
-        $equipment->save();
-
-        return $equipment;
+        // Do not overwrite gender with role; return data as it is
+        return response()->json($equipment);
     }
+
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'description'                       => 'nullable|string|max:255',
+            'quantity'                   => 'nullable|integer',
+            'location'                   => 'nullable|string|max:255',
+            'condition'                   => 'nullable|string|max:255',
+            'equipment_status'            => 'nullable|string|max:255',
+        ]);
+        // Find the equipment by ID
+        $equipment = Equipment::find($id);
+
+        if (!$equipment) {
+            return response()->json(['message' => 'Equipment not found'], 404);
+        }
+
+        // Update the citizen's details
+        $equipment->update($validated);
+
+        // Return the updated citizen data
+        return response()->json(['message' => 'Citizen details updated successfully', 'medicine' => $equipment]);
+    }
+
 
     /**
      * Remove the specified resource from storage.

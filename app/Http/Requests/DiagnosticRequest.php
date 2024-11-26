@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\CitizenHistory;
 
 class DiagnosticRequest extends FormRequest
 {
@@ -23,7 +24,7 @@ class DiagnosticRequest extends FormRequest
     {
         return [
             'diagnosis'           => 'required|string|max:255',
-            'date'                => 'required|date|date_format:Y-m-d',
+            'date'                => 'nullable|date|date_format:Y-m-d',
         ];
     }
 
@@ -38,5 +39,10 @@ class DiagnosticRequest extends FormRequest
             'diagnosis.required' => 'The diagnostic name is required.',
             'date.date'          => 'The diagnosis date must be a valid date.',
         ];
+    }
+
+    public function citizenHistory()
+    {
+        return $this->belongsTo(CitizenHistory::class, 'citizen_history_id'); // Ensure the correct foreign key
     }
 }

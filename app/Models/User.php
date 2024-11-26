@@ -36,7 +36,7 @@ class User extends Authenticatable
         'role',
         'image_path',
         'password',
-        'approved',
+        'is_admin',
     ];
 
     /**
@@ -57,5 +57,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'approved' => 'boolean',
     ];
 }

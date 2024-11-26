@@ -29,10 +29,28 @@ class CitizenHistory extends Model
      * @var array
      */
     protected $fillable = [
-        'citizen_id',
-        'diagnostic_id',
-        'date',
-    ];
+    'citizen_id',
+    'diagnostic_id',
+    'date',
+    'visit_date',
+    'firstname',
+    'middle_name',
+    'lastname',
+    'address',
+    'date_of_birth',
+    'gender',
+    'citizen_status',
+    'blood_type',
+    'height',
+    'weight',
+    'allergies',
+    'condition',
+    'medication',
+    'emergency_contact_name',
+    'emergency_contact_no',
+    'services_availed',
+];
+
 
     /**
      * Get the citizen that owns the history.
@@ -42,11 +60,17 @@ class CitizenHistory extends Model
         return $this->belongsTo(CitizenDetails::class, 'citizen_id', 'citizen_id');
     }
 
-    /**
-     * Get the diagnostic that owns the history.
-     */
-    public function diagnostic()
+     // Define the relationship with the Diagnostics model
+    public function diagnostics()
     {
-        return $this->belongsTo(Diagnostic::class, 'diagnostic_id', 'diagnostic_id');
+        return $this->hasMany(Diagnostic::class); // Assuming you have a Diagnostic model
+    }
+public function services()
+{
+    return $this->belongsToMany(Services::class, 'citizen_history_service', 'citizen_history_id', 'service_id');
+}
+ public function diagnostic()
+    {
+        return $this->belongsTo(Diagnostic::class, 'diagnostic_id'); // Foreign key is diagnostic_id in the citizen_histories table
     }
 }

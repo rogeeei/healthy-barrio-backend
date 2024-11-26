@@ -28,7 +28,7 @@ class CitizenDetailsRequest extends FormRequest
             'suffix'                    => 'nullable|string|max:255',
             'address'                   => 'required|string|max:255',
             'date_of_birth'             => 'required|date|date_format:Y-m-d',
-            'gender'                    => 'required|string|max:255',
+            'gender'                    => 'required|string',
             'citizen_status'            => 'required|string|max:255',
             'blood_type'                => 'nullable|string|max:255',
             'height'                    => 'string|max:255',
@@ -38,7 +38,6 @@ class CitizenDetailsRequest extends FormRequest
             'medication'                => 'string|max:255',
             'emergency_contact_name'    => 'required|max:255',
             'emergency_contact_no'      => 'string|required|max:255',
-            'services_availed'          => 'required|string|max:255',
         ];
     }
 }

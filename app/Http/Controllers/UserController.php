@@ -7,39 +7,53 @@ use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function index()
+    {
+        $user = User::all();
+        return response()->json($user);
+    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(UserRequest $request)
     {
-        // Retrieve the validated input data...
+        // Retrieve the validated input data
         $validated = $request->validated();
 
+        // Check if the 'role' is 'user'
+        if (isset($validated['role']) && $validated['role'] === 'user') {
+            // If the 'approved' field is not set or false, set the user as unapproved and return a waiting for approval message
+            if (!isset($validated['approved']) || !$validated['approved']) {
+                // Set the 'approved' field to false if it's not provided
+                $validated['approved'] = false;
+
+                // Create the user with the 'approved' field set to false
+                $user = User::create($validated);
+
+                return response()->json([
+                    'message' => 'Your account is waiting for the approval of the admin.',
+                    'user' => $user
+                ], 201); // Account created, but awaiting approval
+            }
+        }
+
+        // If the password is provided, hash it
         $validated['password'] = Hash::make($validated['password']);
 
-        //     // Create a new user with the approved status set to false
-        $user = User::create([
-            'firstname' => $request->firstname,
-            'middle_name' => $request->middle_name,
-            'lastname' => $request->lastname,
-            'suffix' => $request->suffix,
-            'email' => $request->email,
-            'phone_number' => $request->phone_number,
-            'birthdate' => $request->birthdate,
-            'brgy' => $request->brgy,
-            'role' => $request->role,
-            'password' => Hash::make($request->password),
-            'approved' => false, // Set approved to false by default
-            'image_path' => $request->image_path,
-        ]);
+        // Create the user
+        $user = User::create($validated);
 
-        return $user;
-        return response()->json(['message' => 'Registration successful. Awaiting admin approval.']);
+        return response()->json([
+            'message' => 'User created successfully',
+            'user' => $user
+        ], 201);
     }
+
 
 
 
@@ -72,18 +86,67 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserRequest $request, string $id)
+   public function update(Request $request, string $id)
+{
+    // Find the user by ID or fail with a 404
+    $user = User::findOrFail($id);
+
+    // Validate the incoming data
+    $validated = $request->validate([
+        'firstname' => 'nullable|string|max:255',
+        'middle_name' => 'nullable|string|max:255',
+        'lastname' => 'nullable|string|max:255',
+        'suffix' => 'nullable|string|max:255',
+        'email' => 'nullable|email|max:255|unique:users,email,' . $id . ',user_id', // Ignore current user
+        'phone_number' => 'nullable|string|max:20|unique:users,phone_number,' . $id . ',user_id', // Ignore current user
+        'birthdate' => 'nullable|date',
+        'brgy' => 'nullable|string|max:255',
+        'role' => 'nullable|string|max:255',
+        'image_path' => 'nullable|string|max:255',
+        'password' => 'nullable|string|min:8|confirmed', // Password confirmation required
+    ]);
+
+    // Update the user's data with validated values
+    $user->update([
+        'firstname' => $validated['firstname'] ?? $user->firstname,
+        'middle_name' => $validated['middle_name'] ?? $user->middle_name,
+        'lastname' => $validated['lastname'] ?? $user->lastname,
+        'suffix' => $validated['suffix'] ?? $user->suffix,
+        'email' => $validated['email'] ?? $user->email,
+        'phone_number' => $validated['phone_number'] ?? $user->phone_number,
+        'birthdate' => $validated['birthdate'] ?? $user->birthdate,
+        'brgy' => $validated['brgy'] ?? $user->brgy,
+        'role' => $validated['role'] ?? $user->role,
+        'image_path' => $validated['image_path'] ?? $user->image_path,
+        'password' => isset($validated['password']) ? bcrypt($validated['password']) : $user->password,
+    ]);
+
+    // Return the updated user data as a JSON response
+  return response()->json([
+  'success' => true,
+  'user' => $user->only(['firstname', 'middle_name', 'lastname', 'email', 'phone_number', 'birthdate', 'brgy', 'role', 'image_path']),
+], 200);
+
+}
+
+
+    public function getUserDetails()
     {
-        $user = User::findOrFail($id);
+        // Check if user is authenticated
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['message' => 'User not authenticated'], 401);
+        }
 
-        $validated = $request->validated();
-
-        $user->lastname = $validated['lastname'];
-
-        $user->save();
-
-        return $user;
+        // Return the necessary user details
+        return response()->json([
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'barangay' => $user->brgy,  // Renamed to match the frontend's expected key
+        ]);
     }
+
+
     /**
      * Remove the specified resource from storage.
      */
@@ -95,46 +158,4 @@ class UserController extends Controller
 
         return $user;
     }
-
-    /**
-     * Admin.
-     */
-    public function approve(Request $request, $id)
-    {
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['message' => 'User not found'], 404);
-        }
-
-        $user->approved = true;
-        $user->save();
-
-        return response()->json(['message' => 'User approved successfully'], 200);
-    }
-
-
-    /**
-     * Register a new user.
-     */
-    // public function store(UserRequest $request)
-    // {
-    //     // Create a new user with the approved status set to false
-    //     $user = User::create([
-    //         'firstname' => $request->firstname,
-    //         'middle_name' => $request->middle_name,
-    //         'lastname' => $request->lastname,
-    //         'suffix' => $request->suffix,
-    //         'email' => $request->email,
-    //         'phone_number' => $request->phone_number,
-    //         'birthdate' => $request->birthdate,
-    //         'brgy' => $request->brgy,
-    //         'role' => $request->role,
-    //         'password' => Hash::make($request->password),
-    //         'approved' => false, // Set approved to false by default
-    //         'image_path' => $request->image_path,
-    //     ]);
-
-    //     return response()->json(['message' => 'Registration successful. Awaiting admin approval.']);
-    // }
 }

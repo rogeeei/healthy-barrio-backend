@@ -14,10 +14,18 @@ class AuthController extends Controller
     /**
      * Log in to the specified resource.
      */
-    public function login(UserRequest $request)
+    public function login(Request $request)
     {
-        // Retrieve the request data
-        $data = $request->only('user_id', 'brgy', 'role', 'password');
+        // Validate incoming request data
+        $validated = $request->validate([
+            'user_id' => 'required|string',
+            'brgy' => 'required|string',
+            'role' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        // Retrieve the validated data
+        $data = $validated;
 
         // Attempt to find the user based on user_id, brgy, role, and password
         $user = User::where('user_id', $data['user_id'])
@@ -25,6 +33,7 @@ class AuthController extends Controller
             ->where('role', $data['role'])
             ->first();
 
+        // Check if user exists and if the password matches
         if (!$user || !Hash::check($data['password'], $user->password)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
@@ -35,9 +44,9 @@ class AuthController extends Controller
         }
 
         // Generate the token for the authenticated user
-        $token = $user->createToken($data['user_id'])->plainTextToken;
+        $token = $user->createToken('User Token')->plainTextToken;
 
-        // Ensure token and role are included in the response
+        // Prepare the response
         $response = [
             'token' => $token,
             'data' => [
@@ -45,8 +54,6 @@ class AuthController extends Controller
                 'user_id' => $user->user_id,
             ],
         ];
-
-        return response()->json(['message' => 'Login successful', 'data' => $response], 200);
 
         // Return the successful login response
         return response()->json(['message' => 'Login successful', 'data' => $response], 200);

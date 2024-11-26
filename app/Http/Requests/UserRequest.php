@@ -42,6 +42,8 @@ class UserRequest extends FormRequest
                 'birthdate'          => 'nullable|date|date_format:Y-m-d',
                 'role'               => 'required|in:admin,user',
                 'image_path'         => 'nullable|max:255',
+                'approved'           => 'nullable|boolean',
+
 
 
             ];

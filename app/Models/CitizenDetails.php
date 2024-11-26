@@ -45,11 +45,42 @@ class CitizenDetails extends Model
         'medication',
         'emergency_contact_name',
         'emergency_contact_no',
-        'services_availed',
     ];
 
     public function histories()
+{
+    return $this->hasMany(CitizenHistory::class, 'citizen_id');
+}
+
+    public function getAgeAttribute()
     {
-        return $this->hasMany(CitizenHistory::class, 'citizen_id', 'citizen_id');
+        return \Carbon\Carbon::parse($this->date_of_birth)->age;
+    }
+
+    // Add an accessor for the gender attribute
+    public function getGenderAttribute($value)
+    {
+        if ($value == 'M') {
+            return 'Male';
+        } elseif ($value == 'F') {
+            return 'Female';
+        }
+
+        return $value; // return as is if neither 'M' nor 'F'
+    }
+
+ public function services()
+{
+    return $this->belongsToMany(Services::class, 'citizen_service', 'citizen_id', 'services_id');
+}
+
+
+    public function servicesAvailed()
+    {
+        return $this->belongsToMany(Services::class, 'citizen_service', 'citizen_id', 'service_id', );
+    }
+    public function diagnostics()
+    {
+        return $this->hasMany(Diagnostic::class, 'citizen_id'); // Foreign key is citizen_id in the diagnostics table
     }
 }

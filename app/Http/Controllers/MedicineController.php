@@ -27,19 +27,43 @@ class MedicineController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Display the specified resource.
      */
-    public function update(MedicineRequest $request, string $id)
+    public function show(string $id)
     {
         $medicine = Medicine::findOrFail($id);
 
-        $validated = $request->validated();
+        // Do not overwrite gender with role; return data as it is
+        return response()->json($medicine);
+    }
 
-        $medicine->name = $validated['name'];
 
-        $medicine->save();
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        $validated = $request->validate([
+            'name'                       => 'nullable|string|max:255',
+            'usage_description'          => 'nullable|string|max:255',
+            'quantity'                   => 'nullable|integer',
+            'expiration_date'            => 'nullable||date|date_format:Y-m-d',
+            'batch_no'                   => 'nullable|string|max:255',
+            'location'                   => 'nullable|string|max:255',
+            'medicine_status'            => 'nullable|string|max:255',
+        ]);
+        // Find the citizen by ID
+        $medicine = Medicine::find($id);
 
-        return $medicine;
+        if (!$medicine) {
+            return response()->json(['message' => 'Medicine not found'], 404);
+        }
+
+        // Update the citizen's details
+        $medicine->update($validated);
+
+        // Return the updated citizen data
+        return response()->json(['message' => 'Citizen details updated successfully', 'medicine' => $medicine]);
     }
 
     /**

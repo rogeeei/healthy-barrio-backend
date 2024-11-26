@@ -31,6 +31,7 @@ class Diagnostic extends Model
     protected $fillable = [
         'diagnosis',
         'date',
+        'citizen_id',
     ];
 
 
@@ -40,5 +41,23 @@ class Diagnostic extends Model
     public function histories()
     {
         return $this->hasMany(CitizenHistory::class, 'diagnostic_id', 'diagnostic_id');
+    }
+
+    public function diagnostics()
+    {
+        return $this->hasMany(Diagnostic::class, 'citizen_id', 'citizen_id');
+    }
+     public function citizen()
+    {
+        return $this->belongsTo(CitizenDetails::class, 'citizen_id');
+    }
+     public function citizenDetails()
+    {
+        return $this->belongsTo(CitizenDetails::class, 'citizen_id'); // Foreign key is citizen_id in the diagnostics table
+    }
+
+    public function citizenHistories()
+    {
+        return $this->hasMany(CitizenHistory::class, 'diagnostic_id'); // Foreign key is diagnostic_id in the citizen_histories table
     }
 }
